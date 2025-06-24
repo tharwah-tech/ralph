@@ -31,7 +31,7 @@ services:
       - web
 
   db:
-    image: mysql:8
+    image: mysql:8.0
     restart: always
     environment:
       MYSQL_DATABASE: ralph_ng
@@ -40,7 +40,12 @@ services:
       MYSQL_PASSWORD: ralph_ng
     volumes:
       - ralph_dbdata:/var/lib/mysql
-    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb-flush-log-at-trx-commit=0
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:7-alpine

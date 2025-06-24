@@ -28,7 +28,7 @@ services:
     image: allegro/ralph-static-nginx:latest
     restart: always
     ports:
-      - "80:80"
+      - "87:80"
     volumes:
       - ralph_media:/opt/media
 

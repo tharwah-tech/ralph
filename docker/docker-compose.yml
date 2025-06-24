@@ -1,40 +1,38 @@
-version: '3'
+version: "3.9"
+
 services:
   web:
-    platform: linux/amd64
     image: allegro/ralph:latest
     restart: always
     ports:
-      - "8000"
+      - "8057:8000"
     volumes:
       - ralph_media:/var/local/ralph/media
       - ralph_static:/usr/share/ralph/static
-    links:
-      - db
-      - redis
-      - nginx
     environment:
-        DATABASE_NAME: ralph_ng
-        DATABASE_USER: ralph_ng
-        DATABASE_PASSWORD: ralph_ng
-        DATABASE_HOST: db
-        REDIS_HOST: redis
-        REDIS_PASSWORD: ""
-        REDIS_PORT: 6379
-        REDIS_DB: 0
+      DATABASE_NAME: ralph_ng
+      DATABASE_USER: ralph_ng
+      DATABASE_PASSWORD: ralph_ng
+      DATABASE_HOST: db
+      REDIS_HOST: redis
+      REDIS_PASSWORD: ""
+      REDIS_PORT: 6379
+      REDIS_DB: 0
 
   nginx:
-    platform: linux/amd64
     image: allegro/ralph-static-nginx:latest
     restart: always
-    ports:
-      - "87:80"
+    expose:
+      - "84:80"                    # Coolify → OPTIONAL if you plan to proxy 8000 directly
     volumes:
       - ralph_media:/opt/media
+      - ralph_static:/usr/share/nginx/html/static:ro
+    depends_on:
+      - web
 
   db:
-    platform: linux/amd64
     image: mysql:8
+    restart: always
     environment:
       MYSQL_DATABASE: ralph_ng
       MYSQL_ROOT_PASSWORD: ralph_ng
@@ -42,31 +40,27 @@ services:
       MYSQL_PASSWORD: ralph_ng
     volumes:
       - ralph_dbdata:/var/lib/mysql
-      # - ./mysql-config:/etc/mysql/conf.d
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 
   redis:
-    platform: linux/amd64
-    image: redis:7
+    image: redis:7-alpine
     restart: always
-    ports:
+    expose:
       - "6379"
 
   inkpy:
     build:
       context: ../
       dockerfile: docker/Dockerfile-inkpy
-    platform: linux/amd64
     restart: always
-    links:
-      - redis:redis
+    depends_on:
+      - redis
     environment:
-        REDIS_HOST: redis
-        REDIS_PASSWORD: ""
-        REDIS_PORT: 6379
-        REDIS_DB: 0
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_DB: 0
 
 volumes:
   ralph_dbdata:
-  ralph_dbdata_mysql8:
   ralph_media:
   ralph_static:

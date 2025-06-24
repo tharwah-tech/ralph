@@ -22,7 +22,7 @@ services:
   nginx:
     image: allegro/ralph-static-nginx:latest
     restart: always
-    expose:
+    ports:
       - "84:80"                    # Coolify → OPTIONAL if you plan to proxy 8000 directly
     volumes:
       - ralph_media:/opt/media
@@ -50,8 +50,8 @@ services:
   redis:
     image: redis:7-alpine
     restart: always
-    expose:
-      - "6379"
+    ports:
+      - "5578:6379"
 
   inkpy:
     build:

@@ -60,6 +60,17 @@ DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5528",
+    "http://localhost:5527", 
+    "http://127.0.0.1:5528",
+    "http://127.0.0.1:5527",
+    "https://ralph.72.146.232.114.sslip.io",
+    "https://ralph.72.146.232.114.sslip.io:5528",
+    "https://ralph.72.146.232.114.sslip.io:5527",
+    "https://ralph.72.146.232.114.sslip.io:5528",
+]
+
 # Only for deployment
 RALPH_INSTANCE = os.environ.get("RALPH_INSTANCE", "http://127.0.0.1:8000")
 

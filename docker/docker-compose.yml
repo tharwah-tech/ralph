@@ -5,7 +5,7 @@ services:
     image: allegro/ralph:latest
     restart: always
     ports:
-      - "8057:8000"
+      - "5527:8000"
     volumes:
       - ralph_media:/var/local/ralph/media
       - ralph_static:/usr/share/ralph/static
@@ -29,7 +29,7 @@ services:
     image: allegro/ralph-static-nginx:latest
     restart: always
     ports:
-      - "8085:80"
+      - "5528:80"
     volumes:
       - ralph_media:/opt/media
       - ralph_static:/usr/share/nginx/html/static:ro
